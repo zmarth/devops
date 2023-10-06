@@ -31,7 +31,6 @@ pipeline {
                     }
                 }
         }
-// Privet ot Lolika
         stage("docker push"){
             steps {
                 echo " ========== start pushing image ========== "
