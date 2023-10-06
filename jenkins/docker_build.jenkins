@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo " ========== start building image ========== "
                 dir('docker/toolbox') {
-                    sh 'docker build -t docker.io/my-docker-hub-organization/zmarth/toolbox:latest . '
+                    sh 'docker build -t zmarth/toolbox:latest . '
                     }
                 }
         }
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 echo " ========== start pushing image ========== "
                 sh """
-                docker push docker.io/my-docker-hub-organization/zmarth/toolbox:latest
+                docker push zmarth/toolbox:latest
                 """
             }
         }
