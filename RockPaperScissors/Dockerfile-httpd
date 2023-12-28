@@ -1,6 +1,0 @@
-#This docker file is for httpd web server
-FROM centos:7
-RUN yum -y update && yum -y install httpd
-COPY ./Simpsons/ /var/www/html/
-EXPOSE 80
-CMD ["httpd", "-D", "FOREGROUND"]
