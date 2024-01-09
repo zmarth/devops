@@ -1,0 +1,96 @@
+---
+- name: Use the Ansible Vault to retrieve the private key
+  set_fact:
+    decrypted_ssh_private_key: "{{ lookup('file', ansible_ssh_private_key_file | default('') | vault) }}"
+  vars:
+    ansible_become: yes
+  when: decrypted_ssh_private_key is defined
+  
+- name: Uninstall old version of Jenkins
+  apt:
+    name: "{{ jenkins_pkg }}"
+    state: absent
+  become: true
+
+- name: Ensure the system is up-to-date
+  apt:
+    update_cache: yes
+    upgrade: full
+  become: true
+
+- name: Install required packages on ansible slave
+  apt:
+    name: "{{ ansible_pkg }}"
+    state: present
+  become: true
+
+# Configure Docker 
+- name: Configure Docker 
+  block:
+    - name: Set up Docker repository
+      shell: "{{ docker_repo_setup_cmd }}"
+      args:
+        executable: /bin/bash
+      become: true
+
+    - name: Update apt cache after setting up Docker repository
+      apt:
+        update_cache: yes
+      become: true
+
+    - name: Install Docker
+      apt:
+        name: "{{ docker_pkg }}"
+        state: present
+      become: true
+
+
+# Create user
+- name: Create user
+  block:
+    - name: Ensure the slave group exists
+      group:
+        name: "{{ slave_group }}"
+        state: present
+      become: true
+
+    - name: Create user slave
+      user:
+        name: "{{ slave_user }}"
+        groups: "{{ slave_groups }}"
+        shell: "{{ slave_shell }}"
+        append: true
+        createhome: yes
+        home: "/home/{{ slave_user }}"
+      become: true
+
+    - name: Add sudoers configuration for slave user
+      copy:
+        content: "{{ slave_sudoers_content }}"
+        dest: "{{ slave_sudoers_dest }}"
+        owner: "{{ sudoers_owner }}"
+        group: "{{ sudoers_group }}"
+        mode: "{{ sudoers_mode }}"
+      become: true
+
+    - name: Ensure the slave home directory exists
+      file:
+        path: "/home/{{ slave_user }}"
+        state: directory
+        owner: "{{ slave_user }}"
+        group: "{{ slave_user }}"
+      become: true
+
+    - name: Ensure the SSH directory exists
+      file:
+        path: "{{ slave_ssh_dir }}"
+        state: directory
+        owner: "{{ slave_user }}"
+        group: "{{ slave_user }}"
+      become: true
+
+    # - name: Receive Jenkins SSH Public Key from Master
+    #   authorized_key:
+    #     user: "{{ slave_ssh_user }}"
+    #     key: "{{ lookup('file', '/home/slave/.ssh/id_rsa.pub') }}"
+    #   become: true

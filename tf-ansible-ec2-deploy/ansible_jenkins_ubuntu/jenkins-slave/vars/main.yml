@@ -1,0 +1,60 @@
+---
+# Common
+jenkins_pkg: "jenkins"
+ansible_pkg:
+  - openjdk-11-jdk
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+  - curl
+  - git
+  - wget
+  - nginx
+
+
+docker_repo_setup_cmd: |
+  sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key && \
+  echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+docker_pkg:
+  - docker
+  - docker.io
+  - containerd
+
+jenkins_repo_setup_cmd: |
+  sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key && \
+  echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+
+
+jenkins_svc_name: jenkins 
+
+#Add to sudoers
+sudoers_owner: root
+slave_shell: /bin/bash
+sudoers_group: root
+sudoers_mode: '0440'
+
+#Create user
+slave_user: "slave"
+slave_group: "slave"
+slave_groups: "slave, docker"
+slave_sudoers_content: 'slave ALL=(ALL) NOPASSWD: /usr/sbin/service slave *'
+slave_sudoers_dest: /etc/sudoers.d/slave
+
+
+
+#SSH
+slave_ssh_owner: slave
+slave_ssh_group: slave
+slave_shell: /bin/bash
+slave_ssh_dir: /home/slaver/.ssh
+slave_ssh_key: /home/slave/.ssh/id_rsa
+slave_ssh_pub_key: /home/slave/.ssh/id_rsa.pub
+slave_ssh_keygen_cmd: ssh-keygen -t rsa -f /home/slave/.ssh/id_rsa -q -N ""
+slave_ssh_user: slave
+slave_ssh_key_mode: '0600'
+slave_ssh_pub_key_mode: '0644'

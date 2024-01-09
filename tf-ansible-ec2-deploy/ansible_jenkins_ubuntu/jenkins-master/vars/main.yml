@@ -1,0 +1,60 @@
+---
+# Common
+jenkins_pkg: "jenkins"
+ansible_pkg:
+  - openjdk-11-jdk
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+  - curl
+  - git
+  - wget
+  - nginx
+
+
+docker_repo_setup_cmd: |
+  sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key && \
+  echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+docker_pkg:
+  - docker
+  - docker.io
+  - containerd
+
+jenkins_repo_setup_cmd: |
+  sudo wget -O /usr/share/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key && \
+  echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+default_shell: /bin/bash
+
+
+masterjenkins_svc_name: jenkins 
+
+#Add to sudoers
+sudoers_owner: root
+
+sudoers_group: root
+sudoers_mode: '0440'
+
+#Create user
+master_user: "master"
+master_group: "master"
+master_groups: "master, docker"
+master_sudoers_content: 'master ALL=(ALL) NOPASSWD: /usr/sbin/service master *'
+master_sudoers_dest: /etc/sudoers.d/master
+
+
+#SSH
+master_ssh_owner: master
+master_ssh_group: master
+master_shell: /bin/bash
+master_ssh_dir: /home/master/.ssh
+master_ssh_key: /home/master/.ssh/id_rsa
+master_ssh_pub_key: /home/master/.ssh/id_rsa.pub
+master_ssh_keygen_cmd: ssh-keygen -t rsa -f /home/master/.ssh/id_rsa -q -N ""
+master_ssh_user: master
+master_ssh_key_mode: '0600'
+master_ssh_pub_key_mode: '0644'
