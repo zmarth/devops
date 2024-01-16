@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    app.kubernetes.io/name: proxy
+spec:
+  containers:
+  - name: nginx
+    image: nginx:stable
+    ports:
+      - containerPort: 80
+        name: http-web-svc
+
+---
+apiVersion: v1
+kind: Service
+apiVersion: v1
+metadata:
+  name: connect
+  namespace: nginx
+spec:
+  type: ExternalName
+  externalName: elasticsearch-master.kibana.svc.cluster.local
+  ports:
+  - port: 9200

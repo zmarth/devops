@@ -1,0 +1,100 @@
+
+# replicas: 1
+# minimumMasterNodes: 1
+# clusterHealthCheckParams: 'wait_for_status=yellow&timeout=1s'
+
+# resources:
+#   requests:
+#     cpu: "500m"
+#     memory: "1Gi"
+#   limits:
+#     cpu: "500m"
+#     memory: "1Gi"
+
+
+
+# initResources: 
+# limits:
+#   cpu: "25m"
+#   # memory: "128Mi"
+# requests:
+#   cpu: "25m"
+#   memory: "128Mi"
+
+
+
+clusterName: "elasticsearch"
+nodeGroup: "master"
+replicas: 1
+minimumMasterNodes: 1
+
+
+
+
+ingress:
+
+  enabled: true
+  annotations: {}
+  className: "nginx"
+  pathtype: ImplementationSpecific
+  hosts:
+    - host: elastic-am.intership.codefactorygroup.com
+      paths:
+        - path: /
+  tls: []
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+initResources:
+  limits:
+    cpu: "25m"
+  # memory: "128Mi"
+  requests:
+    cpu: "25m"
+    memory: "128Mi"
+
+
+
+
+
+# ingress:
+#   enabled: true
+#   annotations: {}
+#   # kubernetes.io/ingress.class: nginx
+#   # kubernetes.io/tls-acme: "true"
+#   className: "nginx"
+#   pathtype: ImplementationSpecific
+#   hosts:
+#     - host: kibana-am.intership.codefactorygroup.com
+#       paths:
+#         - path: /
+#   tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+
+# esConfig:
+#   elasticsearch.yml: |
+#     xpack.security.enabled: false
+
+
+# service:
+#   enabled: true
+#   labels: {}
+#   labelsHeadless: {}
+#   type: NodePort
+#   nodePort: "30234"
+#   annotations: {}
+#   httpPortName: http
+#   transportPortName: transport
+#   loadBalancerIP: ""
+#   loadBalancerSourceRanges: []
+#   externalTrafficPolicy: ""
