@@ -55,6 +55,11 @@ resource "aws_eks_node_group" "private_nodes" {
     role = "general"
   }
 
+  # launch_template {
+  #   name = aws_launch_template.eks-with-disk-name.name
+  #   version = aws_launch_template.eks-with-disk-name.latest_version
+  # }
+
   depends_on = [ 
     aws_iam_role_policy_attachment.nodes-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.nodes-AmazonEKS_CNI_Policy,
