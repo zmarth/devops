@@ -1,0 +1,18 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: mindbox-project
+  region: eu-west-2
+  version: "1.26"
+availabilityZones:
+- eu-west-2a
+- eu-west-2b
+
+managedNodeGroups:
+  - name: ng-1
+    instanceType: t3.micro
+    desiredCapacity: 2
+    volumeSize: 20
+    ssh:
+      allow: true

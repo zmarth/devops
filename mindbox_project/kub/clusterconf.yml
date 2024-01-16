@@ -1,0 +1,28 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: project-mindbox
+  region: eu-west-2
+  version: "1.26"
+vpc:
+  id: vpc-043dfff34ba4c68ee
+  subnets: 
+    private:
+      eu-west-2a:
+        id: subnet-0d08241f19e0f6174
+      eu-west-2b:
+        id: subnet-0f144ca72067a19a0
+    public:
+      eu-west-2a:
+        id: subnet-022d7f9541723606a
+      eu-west-2b:
+        id: subnet-00782fcd22a8f7e7e
+managedNodeGroups:
+  - name: general
+    privateNetworking: true
+    instanceType: t3.small
+    desiredCapacity: 1
+    ssh:
+      allow: true

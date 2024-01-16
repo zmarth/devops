@@ -1,0 +1,57 @@
+---
+- name: Deploy Web App
+  hosts: remote_servers
+  become: yes
+  tasks:
+    - name: Update packages
+      apt:
+        update_cache: yes
+        upgrade: yes
+    - name: Install Docker and Docker Compose
+      become: yes
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker.io
+        - docker-compose
+      ignore_errors: yes
+    - name: Create /opt/app directory
+      file:
+        path: /opt/app
+        state: directory
+
+    - name: Copy Docker Compose file
+      copy:
+        src: "{{ playbook_dir }}/docker-compose.yml"
+        dest: /opt/app/docker-compose.yml
+
+    - name: Create Dockerfiles directories
+      file:
+        path: "/opt/app/Dockerfiles/{{ item }}"
+        state: directory
+      loop:
+        - nginx
+        - php
+        - mysql
+        
+    - name: Copy Dockerfiles and other files
+      copy:
+        src: "{{ playbook_dir }}/Dockerfiles/{{ item }}"
+        dest: /opt/app/Dockerfiles/{{ item }}
+      loop:
+        - nginx/Dockerfile
+        - nginx/default.conf
+        - php/Dockerfile
+        - mysql/Dockerfile
+
+    - name: Copy www directory to /opt/app
+      copy:
+        src: "{{ playbook_dir }}/www/"
+        dest: /opt/app/www/
+
+    
+    - name: Start Docker Compose
+      command: docker-compose -f /opt/app/docker-compose.yml up -d
+      args:
+        chdir: /opt/app
