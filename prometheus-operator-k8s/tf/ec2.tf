@@ -43,9 +43,9 @@ resource "aws_security_group" "test" {
 
 resource "aws_instance" "test" {
   ami           = data.aws_ami.ubuntu_jammy.id
-  instance_type = "t3a.small"
+  instance_type = "t3.small"
   subnet_id     = aws_subnet.public_eu_north_1a.id
-  key_name      = "devops"
+
 
   vpc_security_group_ids = [
     aws_security_group.test.id
