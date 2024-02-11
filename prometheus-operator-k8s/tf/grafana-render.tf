@@ -5,7 +5,7 @@ data "helm_template" "grafana" {
   chart             = "grafana"
   namespace         = "monitoring"
   create_namespace  = true
-  version           = "6.50.7"
+  version           = "7.3.0"
 
   set {
     name    = "image.tag"

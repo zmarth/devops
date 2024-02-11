@@ -1,0 +1,15 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: eks-cluster
+  region: eu-north-1
+availabilityZones:
+- eu-north-1a
+- eu-north-1b
+nodeGroups:
+- name: nodes-general
+  labels:
+    role: workers
+  instanceType: t3.micro
+  desiredCapacity: 2
+  volumeSize: 20
